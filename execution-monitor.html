@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<title>JS Execution Monitor Test</title>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body>
+<div class="container text-center p-5">
+	<section>
+		<div class="row">
+			<div class="col-12">
+
+				<button type="button" class="btn btn-primary mb-3" id="run" onclick="window.runTestsInMainContext();">Run Test In Main Context</button>
+
+				<div id="result"></div>
+
+			</div>
+		</div>
+	</section>
+</div>
+<script>
+
+	/**
+	 * Container list for detected executions.
+	 */
+
+	var detections = [];
+
+	/**
+	 * Print string to the results div
+	 *
+	 *  @param string
+	 */
+
+	function log(string) {
+		var logger = document.getElementById('result');
+		logger.innerHTML = logger.innerHTML + ' [' + string + ']';
+	}
+
+	function clearLog() {
+		detections = [];
+		var logger = document.getElementById('result');
+		logger.innerHTML = '';
+	}
+
+	/**
+	 * Run several commands that should be detected.
+	 * You can copy these in your bot to compare.
+	 *
+	 * @param timeout
+	 */
+
+	function runTestsInMainContext(timeout) {
+		clearLog();
+		document.getElementById('result');
+		reportDetections(200);
+	}
+
+	/**
+	 * Prints the list of detections to a #results div your bot can read.
+	 *
+	 * @param timeout
+	 */
+
+	function reportDetections(timeout) {
+
+		timeout = timeout ? parseInt(timeout) : 200;
+
+		window.setTimeout(function () {
+			if (detections.length) {
+				detections.forEach(function (detection) {
+					log(detection + ': Detected');
+				});
+			}
+			else {
+				log('Passed, No execution detected...');
+			}
+
+		}, timeout);
+	}
+
+	/**
+	 * Log the detected function to the array.
+	 *
+	 * @param propName
+	 */
+
+	function detected(propName) {
+		detections.push(propName);
+	}
+
+	/**
+	 * Tool to override native functions.
+	 * Credit: https://antoinevastel.com/javascript/2019/06/10/monitor-js-execution.html
+	 *
+	 * @param item
+	 */
+
+	function overrideFunction(item) {
+		console.log('Overriding ', item.propName);
+		item.obj[item.propName] = (function (orig) {
+			return function () {
+				detected(item.propName);
+
+				return orig.apply(this, arguments);
+			};
+
+		}(item.obj[item.propName]));
+	}
+
+	/**
+	 * List of native functions we want to montior for our tests.
+	 *
+	 * @type {*[]}
+	 */
+
+	var functionsToOverride = [
+		{
+			propName: 'createElement',
+			obj: document
+		},
+		{
+			propName: 'getElementById',
+			obj: document
+		},
+		{
+			propName: 'querySelectorAll',
+			obj: document
+		},
+		{
+			propName: 'querySelector',
+			obj: document
+		},
+	];
+
+	functionsToOverride.forEach(function (item) {
+		overrideFunction(item);
+	});
+
+	/**
+	 * Wait 1000ms for your bot to execute its tests then report the results.
+	 */
+
+	reportDetections(1000);
+
+</script>
+
+</body>
+</html>
