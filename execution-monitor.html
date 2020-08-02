@@ -27,7 +27,7 @@
 
 	var detections = [];
 	var logger = document.getElementById('result');
-	var spinner = '<div class="spinner-border" role="status"><span class="sr-only">Loading...</span></div>';
+	var spinner = '<div class="spinner-border mt-3" role="status"><span class="sr-only">Loading...</span></div>';
 
 	startSpinner();
 
@@ -38,7 +38,7 @@
 	 */
 
 	function log(string) {
-		logger.innerHTML = logger.innerHTML + ' [' + string + ']';
+		logger.innerHTML = logger.innerHTML + '[' + string + '] <br/>';
 	}
 
 	function clearLog() {
@@ -82,7 +82,7 @@
 
 			if (detections.length) {
 				detections.forEach(function (detection) {
-					log(detection + ': Detected');
+					log(detection.functionName + ': Detected' + (detection.context ? (' in ' + detection.context) : ''));
 				});
 			}
 			else {
@@ -101,11 +101,12 @@
 	/**
 	 * Log the detected function to the array.
 	 *
-	 * @param propName
+	 * @param functionName
+	 * @param callee
 	 */
 
-	function detected(propName) {
-		detections.push(propName);
+	function detected(functionName, callee) {
+		detections.push({ functionName: functionName, context: callee ? callee : null });
 	}
 
 	/**
@@ -119,7 +120,12 @@
 		console.log('Overriding ', item.functionName);
 		item.context[item.functionName] = (function (original) {
 			return function () {
-				detected(item.functionName);
+
+				var callee = arguments.callee.toString();
+				callee = callee.substr('function '.length);
+				callee = callee.substr(0, callee.indexOf('('));
+
+				detected(item.functionName, callee);
 
 				return original.apply(this, arguments);
 			};
