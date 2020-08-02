@@ -51,7 +51,7 @@
 	 */
 
 	function log(string) {
-		logger.innerHTML = logger.innerHTML + '[' + string + '] <br>';
+		logger.innerHTML = logger.innerHTML + string + ' <br>';
 	}
 
 	function clearLog() {
@@ -102,16 +102,14 @@
 			logger.innerHTML = '';
 			if (detections.length) {
 				detections.forEach(function (detection) {
-					log(detection + ': Detected');
+					log('🔍 Detected: ' + detection);
 				});
 			}
 			else {
 				log('No execution detected...');
 			}
 
-			if (document.scripts && document.scripts.length) {
-				console.log(document.scripts);
-			}
+			logScripts();
 
 		}, timeout);
 	}
@@ -129,11 +127,27 @@
 	}
 
 	/**
+	 * Logs a list of scripts loaded on the page.
+	 */
+
+	function logScripts() {
+		var scripts = document.getElementsByTagName('script');
+		if (scripts.length) {
+			for (var i = 0; i < scripts.length; i++) {
+				if (scripts[i].getAttribute('src')) {
+					log('Script Detected: ' + scripts[i].getAttribute('src'));
+				}
+			}
+		}
+	}
+
+	/**
 	 * Tool to override native functions.
 	 * Credit: https://antoinevastel.com/javascript/2019/06/10/monitor-js-execution.html
 	 *
 	 * @param item
 	 */
+
 
 	function overrideFunction(item) {
 		console.log('🧪 Overriding: ', item.functionName);
