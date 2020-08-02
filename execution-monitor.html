@@ -38,7 +38,7 @@
 	 */
 
 	function log(string) {
-		logger.innerHTML = logger.innerHTML + '[' + string + '] <br/>';
+		logger.innerHTML = logger.innerHTML + '[' + string + '] <br>';
 	}
 
 	function clearLog() {
@@ -62,11 +62,11 @@
 		startSpinner();
 		window.setTimeout(function () {
 			// Test createElement execution
-			let newDiv = document.createElement('div');
-			let newContent = document.createTextNode('Creating an element on the page.');
+			var newDiv = document.createElement('div');
+			var newContent = document.createTextNode('Creating an element on the page.');
 			newDiv.appendChild(newContent);
 			// Test getElementById execution
-			let currentDiv = document.getElementById('div1');
+			var currentDiv = document.getElementById('div1');
 			document.body.insertBefore(newDiv, currentDiv);
 			document.getElementById('result');
 			document.getElementsByTagName('div');
@@ -86,9 +86,7 @@
 		timeout = timeout ? parseInt(timeout) : 500;
 
 		window.setTimeout(function () {
-
-			clearLog();
-
+			logger.innerHTML = '';
 			if (detections.length) {
 				detections.forEach(function (detection) {
 					log(detection + ': Detected');
@@ -99,9 +97,7 @@
 			}
 
 			if (document.scripts && document.scripts.length) {
-				document.scripts.forEach(function (script) {
-					log('Found Script: ' + script);
-				});
+				console.log(document.scripts);
 			}
 
 		}, timeout);
@@ -127,13 +123,16 @@
 	 */
 
 	function overrideFunction(item) {
-		console.log('Overriding ', item.functionName);
+		console.log('🧪 Overriding: ', item.functionName);
 		item.context[item.functionName] = (function (original) {
 			return function () {
 
-				var context = null;
+				var callee = arguments.callee.toString();
+				callee = callee.substr('function '.length);
+				callee = callee.substr(0, callee.indexOf('('));
 
-				detected(item.functionName, context);
+				detected(item.functionName, callee);
+				console.log('🔍 Executed: ' + item.functionName + ' in ' + callee);
 
 				return original.apply(this, arguments);
 			};
