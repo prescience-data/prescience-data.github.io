@@ -11,7 +11,14 @@
 	<section>
 		<div class="row mb-5">
 			<div class="col-12">
-				<button type="button" class="btn btn-primary mb-5" id="run" onclick="window.runTestsInMainContext();">Run Test In Main Context</button>
+				<h3>Behavior Monitor</h3>
+				<p>Compare your automated event log to a manual event log to see the importance of simulating real behaviors.</p>
+				<a href="https://antoinevastel.com/javascript/2019/08/31/sneakers-supreme-bots.html" target="_blank" id="link">Credit</a>
+			</div>
+		</div>
+		<div class="row mb-5">
+			<div class="col-12">
+				<button type="button" class="btn btn-primary mb-5" id="run" onclick="window.runTests();">Run Test With Manual Events</button>
 				<div id="result"></div>
 			</div>
 		</div>
@@ -90,14 +97,13 @@
 	 * @param timeout
 	 */
 
-	function runTestsInMainContext(timeout) {
+	function runTests(timeout) {
 		clearLog();
 		startSpinner();
 		window.setTimeout(function () {
-			// Test createElement execution
-
+			// Wait 800ms to record user input
 			reportDetections();
-		}, 200);
+		}, 800);
 	}
 
 	/**
