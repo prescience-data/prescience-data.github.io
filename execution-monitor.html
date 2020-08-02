@@ -127,12 +127,13 @@
 		item.context[item.functionName] = (function (original) {
 			return function () {
 
-				var callee = arguments.callee.toString();
-				callee = callee.substr('function '.length);
-				callee = callee.substr(0, callee.indexOf('('));
-
+				var callee = null;
 				detected(item.functionName, callee);
-				console.log('🔍 Executed: ' + item.functionName + ' in ' + callee);
+				console.log('🔍 Executed: ' + item.functionName);
+
+				if (document.scripts && document.scripts.length) {
+					console.log(document.scripts);
+				}
 
 				return original.apply(this, arguments);
 			};
