@@ -102,11 +102,11 @@
 			logger.innerHTML = '';
 			if (detections.length) {
 				detections.forEach(function (detection) {
-					log('🔍 Detected: ' + detection);
+					log('🔍 Detected: ' + detection.functionName + ' ' + (detection.args ? detection.args : ''));
 				});
 			}
 			else {
-				log('No execution detected...');
+				log('✅ No execution detected...');
 			}
 
 			logScripts();
@@ -118,12 +118,11 @@
 	 * Log the detected function to the array.
 	 *
 	 * @param functionName
-	 * @param callee
+	 * @param args
 	 */
 
-	function detected(functionName, callee) {
-		detections.push(functionName);
-		// detections.push({ functionName: functionName, context: callee ? callee : null });
+	function detected(functionName, args) {
+		detections.push({ functionName: functionName, args: args });
 	}
 
 	/**
@@ -154,9 +153,9 @@
 		item.context[item.functionName] = (function (original) {
 			return function () {
 
-				var callee = document.currentScript;
-				detected(item.functionName, callee);
-				console.log('🔍 Executed: ' + item.functionName + ' in ' + callee);
+				var args = JSON.stringify(Object.values(arguments));
+				detected(item.functionName, args);
+				console.log('🔍 Executed: ' + item.functionName + ' with args: ' + args);
 
 				return original.apply(this, arguments);
 			};
