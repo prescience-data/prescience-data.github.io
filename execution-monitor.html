@@ -82,15 +82,15 @@
 
 			if (detections.length) {
 				detections.forEach(function (detection) {
-					log(detection.functionName + ': Detected' + (detection.context ? (' in ' + detection.context) : ''));
+					log(detection + ': Detected');
 				});
 			}
 			else {
 				log('No execution detected...');
 			}
 
-			if (window.scripts.length) {
-				window.scripts.forEach(function (script) {
+			if (document.scripts && document.scripts.length) {
+				document.scripts.forEach(function (script) {
 					log('Found Script: ' + script);
 				});
 			}
@@ -106,7 +106,8 @@
 	 */
 
 	function detected(functionName, callee) {
-		detections.push({ functionName: functionName, context: callee ? callee : null });
+		detections.push(functionName);
+		// detections.push({ functionName: functionName, context: callee ? callee : null });
 	}
 
 	/**
