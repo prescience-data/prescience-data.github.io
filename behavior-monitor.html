@@ -27,6 +27,11 @@
 				<div id="dump"></div>
 			</div>
 		</div>
+		<div class="row mb-5">
+			<div class="col-12">
+				<div id="full-dump"></div>
+			</div>
+		</div>
 	</section>
 </div>
 <script>
@@ -36,9 +41,9 @@
 	 */
 
 	var detections = [];
-	var dumpLevel = 1;
 	var logger = document.getElementById('result');
 	var dumper = document.getElementById('dump');
+	var fullDumper = document.getElementById('full-dump');
 	var spinner = '<div class="spinner-border mt-3" role="status"><span class="sr-only">Loading...</span></div>';
 
 	startSpinner();
@@ -75,7 +80,7 @@
 					output += property + ': ' + val + '; ';
 				}
 			}
-			dumper.innerHTML += '<code>' + output + '</code><br><br>';
+			fullDumper.innerHTML += '<code>' + output + '</code><br><br>';
 		});
 
 	}
@@ -121,12 +126,8 @@
 			dumper.innerHTML = '';
 			if (detections.length) {
 				log('🔍 Observed ' + detections.length + ' events');
-				if (dumpLevel === 1) {
-					dump(detections);
-				}
-				else {
-					dumpAll(detections);
-				}
+				dump(detections);
+				dumpAll(detections);
 				console.log(detections);
 			}
 			else {
