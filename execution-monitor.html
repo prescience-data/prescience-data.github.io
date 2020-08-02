@@ -140,9 +140,9 @@
 		item.context[item.functionName] = (function (original) {
 			return function () {
 
-				var callee = null;
+				var callee = document.currentScript;
 				detected(item.functionName, callee);
-				console.log('🔍 Executed: ' + item.functionName);
+				console.log('🔍 Executed: ' + item.functionName + ' in ' + callee);
 
 				return original.apply(this, arguments);
 			};
