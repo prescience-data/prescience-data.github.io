@@ -131,11 +131,9 @@
 		item.context[item.functionName] = (function (original) {
 			return function () {
 
-				var callee = arguments.callee.toString();
-				callee = callee.substr('function '.length);
-				callee = callee.substr(0, callee.indexOf('('));
+				var context = null;
 
-				detected(item.functionName, callee);
+				detected(item.functionName, context);
 
 				return original.apply(this, arguments);
 			};
@@ -149,33 +147,41 @@
 	 * @type {*[]}
 	 */
 
-	var scopes = [
+
+	var functionsToOverride = [
 		{
-			context: document,
-			functions: [
-				'createElement', 'getElementById', 'getElementsByClassName', 'getElementsByName', 'getElementsByTagName', 'querySelectorAll', 'querySelector', 'write', 'createTextNode'
-			]
-		}, {
-			context: window,
-			functions: [
-				'innerHeight', 'innerWidth', 'outerHeight', 'outerWidth', 'length', 'localStorage'
-			]
-		}
+			functionName: 'createElement', context: document
+		},
+		{
+			functionName: 'getElementById', context: document
+		},
+		{
+			functionName: 'querySelectorAll', context: document
+		},
+		{
+			functionName: 'querySelector', context: document
+		},
+		{
+			functionName: 'getElementsByClassName', context: document
+		},
+		{
+			functionName: 'getElementsByName', context: document
+		},
+		{
+			functionName: 'getElementsByTagName', context: document
+		},
+		{
+			functionName: 'createTextNode', context: document
+		},
+		{
+			functionName: 'innerHeight', context: window
+		},
+		{
+			functionName: 'innerWidth', context: window
+		},
 	];
 
-	var functionsToMonitor = [];
-
-	scopes.forEach(function (scope) {
-		scope.functions.forEach(function (functionName) {
-			functionsToMonitor.push({
-				                        functionName: functionName,
-				                        context: scope.context
-			                        });
-		});
-
-	});
-
-	functionsToMonitor.forEach(function (item) {
+	functionsToOverride.forEach(function (item) {
 		overrideFunction(item);
 	});
 
