@@ -29,6 +29,19 @@
 	var logger = document.getElementById('result');
 	var spinner = '<div class="spinner-border mt-3" role="status"><span class="sr-only">Loading...</span></div>';
 
+	var observer = new MutationObserver(function (mutations) {
+		mutations.forEach(function (mutation) {
+			//var search = '';
+			if (mutation.addedNodes.length === 1 && mutation.addedNodes[0].text !== undefined) {
+				var text = mutation.addedNodes[0].text;
+				console.log('Intercepted Mutation', text);
+			}
+		});
+	});
+
+	var config = { childList: true, subtree: true };
+	observer.observe(document.documentElement, config);
+
 	startSpinner();
 
 	/**
@@ -130,10 +143,6 @@
 				var callee = null;
 				detected(item.functionName, callee);
 				console.log('🔍 Executed: ' + item.functionName);
-
-				if (document.scripts && document.scripts.length) {
-					console.log(document.scripts);
-				}
 
 				return original.apply(this, arguments);
 			};
