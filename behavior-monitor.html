@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<title>JS Behaviour Monitor Test</title>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" crossorigin="anonymous">
+</head>
+<body class="p-5 text-center">
+<div class="container text-center p-5">
+	<section>
+		<div class="row mb-5">
+			<div class="col-12">
+				<button type="button" class="btn btn-primary mb-5" id="run" onclick="window.runTestsInMainContext();">Run Test In Main Context</button>
+				<div id="result"></div>
+			</div>
+		</div>
+		<div class="row mb-5">
+			<div class="col-12">
+				<div id="dump"></div>
+			</div>
+		</div>
+	</section>
+</div>
+<script>
+
+	/**
+	 * Container list for detected executions.
+	 */
+
+	var detections = [];
+	var dumpLevel = 1;
+	var logger = document.getElementById('result');
+	var dumper = document.getElementById('dump');
+	var spinner = '<div class="spinner-border mt-3" role="status"><span class="sr-only">Loading...</span></div>';
+
+	startSpinner();
+
+	/**
+	 * Print string to the results div
+	 *
+	 *  @param string
+	 */
+
+	function log(string) {
+		logger.innerHTML = logger.innerHTML + string + ' <br>';
+	}
+
+	function dump(data) {
+		data.forEach(function (obj) {
+			var output = '';
+			for (var property in obj) {
+				if (property === 'type') {
+					output = obj[property];
+				}
+			}
+			dumper.innerHTML += '<code>' + output + '</code><br><br>';
+		});
+
+	}
+
+	function dumpAll(data) {
+		data.forEach(function (obj) {
+			var output = '';
+			for (var property in obj) {
+				var val = obj[property];
+				if (typeof val === 'string' || typeof val === 'number') {
+					output += property + ': ' + val + '; ';
+				}
+			}
+			dumper.innerHTML += '<code>' + output + '</code><br><br>';
+		});
+
+	}
+
+	function clearLog() {
+		detections = [];
+		logger.innerHTML = '';
+		dumper.innerHTML = '';
+	}
+
+	function startSpinner() {
+		logger.innerHTML = spinner;
+	}
+
+	/**
+	 * Run several commands that should be detected.
+	 * You can copy these in your bot to compare.
+	 *
+	 * @param timeout
+	 */
+
+	function runTestsInMainContext(timeout) {
+		clearLog();
+		startSpinner();
+		window.setTimeout(function () {
+			// Test createElement execution
+
+			reportDetections();
+		}, 200);
+	}
+
+	/**
+	 * Prints the list of detections to a #results div your bot can read.
+	 *
+	 * @param timeout
+	 */
+
+	function reportDetections(timeout) {
+
+		timeout = timeout ? parseInt(timeout) : 500;
+
+		window.setTimeout(function () {
+			logger.innerHTML = '';
+			dumper.innerHTML = '';
+			if (detections.length) {
+				log('🔍 Observed ' + detections.length + ' events');
+				if (dumpLevel === 1) {
+					dump(detections);
+				}
+				else {
+					dumpAll(detections);
+				}
+				console.log(detections);
+			}
+			else {
+				log('🚫 No events observed!');
+			}
+
+		}, timeout);
+	}
+
+	/**
+	 * Log the detected observation to the array.
+	 *
+	 * @param observation
+	 */
+
+	function detected(observation) {
+		detections.push(observation);
+	}
+
+	function listener(args) {
+		detected(args);
+	}
+
+	document.addEventListener('touchmove', listener, !0);
+	document.addEventListener('touchstart', listener, !0);
+	document.addEventListener('touchend', listener, !0);
+	document.addEventListener('touchcancel', listener, !0);
+	document.addEventListener('mousemove', listener, !0);
+	document.addEventListener('click', listener, !0);
+	document.addEventListener('mousedown', listener, !0);
+	document.addEventListener('mouseup', listener, !0);
+	document.addEventListener('pointerdown', listener, !0);
+	document.addEventListener('pointerup', listener, !0);
+	document.addEventListener('keydown', listener, !0);
+	document.addEventListener('keyup', listener, !0);
+	document.addEventListener('keypress', listener, !0);
+
+	/**
+	 * Wait 1000ms for your bot to execute its tests then report the results.
+	 */
+
+	reportDetections(1000);
+
+</script>
+
+</body>
+</html>
