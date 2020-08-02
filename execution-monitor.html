@@ -4,18 +4,17 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<title>JS Execution Monitor Test</title>
-	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" crossorigin="anonymous">
 </head>
-<body>
+<body class="p-3 text-center">
 <div class="container text-center p-5">
 	<section>
 		<div class="row">
 			<div class="col-12">
-
 				<button type="button" class="btn btn-primary mb-3" id="run" onclick="window.runTestsInMainContext();">Run Test In Main Context</button>
+				<div id="result">
 
-				<div id="result"></div>
-
+				</div>
 			</div>
 		</div>
 	</section>
@@ -27,6 +26,10 @@
 	 */
 
 	var detections = [];
+	var logger = document.getElementById('result');
+	var spinner = '<div class="spinner-border" role="status"><span class="sr-only">Loading...</span></div>';
+
+	startSpinner();
 
 	/**
 	 * Print string to the results div
@@ -35,14 +38,16 @@
 	 */
 
 	function log(string) {
-		var logger = document.getElementById('result');
 		logger.innerHTML = logger.innerHTML + ' [' + string + ']';
 	}
 
 	function clearLog() {
 		detections = [];
-		var logger = document.getElementById('result');
 		logger.innerHTML = '';
+	}
+
+	function startSpinner() {
+		logger.innerHTML = spinner;
 	}
 
 	/**
@@ -54,8 +59,11 @@
 
 	function runTestsInMainContext(timeout) {
 		clearLog();
+		startSpinner();
 		document.getElementById('result');
-		reportDetections(200);
+		document.getElementsByTagName('div');
+		document.querySelectorAll('div');
+		reportDetections();
 	}
 
 	/**
@@ -66,16 +74,25 @@
 
 	function reportDetections(timeout) {
 
-		timeout = timeout ? parseInt(timeout) : 200;
+		timeout = timeout ? parseInt(timeout) : 500;
 
 		window.setTimeout(function () {
+
+			clearLog();
+
 			if (detections.length) {
 				detections.forEach(function (detection) {
 					log(detection + ': Detected');
 				});
 			}
 			else {
-				log('Passed, No execution detected...');
+				log('No execution detected...');
+			}
+
+			if (window.scripts.length) {
+				window.scripts.forEach(function (script) {
+					log('Found Script: ' + script);
+				});
 			}
 
 		}, timeout);
@@ -99,15 +116,15 @@
 	 */
 
 	function overrideFunction(item) {
-		console.log('Overriding ', item.propName);
-		item.obj[item.propName] = (function (orig) {
+		console.log('Overriding ', item.functionName);
+		item.context[item.functionName] = (function (original) {
 			return function () {
-				detected(item.propName);
+				detected(item.functionName);
 
-				return orig.apply(this, arguments);
+				return original.apply(this, arguments);
 			};
 
-		}(item.obj[item.propName]));
+		}(item.context[item.functionName]));
 	}
 
 	/**
@@ -116,26 +133,33 @@
 	 * @type {*[]}
 	 */
 
-	var functionsToOverride = [
+	var scopes = [
 		{
-			propName: 'createElement',
-			obj: document
-		},
-		{
-			propName: 'getElementById',
-			obj: document
-		},
-		{
-			propName: 'querySelectorAll',
-			obj: document
-		},
-		{
-			propName: 'querySelector',
-			obj: document
-		},
+			context: document,
+			functions: [
+				'createElement', 'getElementById', 'getElementsByClassName', 'getElementsByName', 'getElementsByTagName', 'querySelectorAll', 'querySelector', 'write'
+			]
+		}, {
+			context: window,
+			functions: [
+				'innerHeight', 'innerWidth', 'outerHeight', 'outerWidth', 'length', 'localStorage'
+			]
+		}
 	];
 
-	functionsToOverride.forEach(function (item) {
+	var functionsToMonitor = [];
+
+	scopes.forEach(function (scope) {
+		scope.functions.forEach(function (functionName) {
+			functionsToMonitor.push({
+				                        functionName: functionName,
+				                        context: scope.context
+			                        });
+		});
+
+	});
+
+	functionsToMonitor.forEach(function (item) {
 		overrideFunction(item);
 	});
 
