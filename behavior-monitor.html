@@ -94,9 +94,11 @@
 		detections = [];
 		logger.innerHTML = '';
 		dumper.innerHTML = '';
+		fullDumper.innerHTML = '';
 	}
 
 	function startSpinner() {
+		clearLog();
 		logger.innerHTML = spinner;
 	}
 
@@ -108,12 +110,11 @@
 	 */
 
 	function runTests(timeout) {
-		clearLog();
 		startSpinner();
 		window.setTimeout(function () {
-			// Wait 800ms to record user input
+			// Wait 2000ms to record user input
 			reportDetections();
-		}, 800);
+		}, 2000);
 	}
 
 	/**
@@ -124,7 +125,7 @@
 
 	function reportDetections(timeout) {
 
-		timeout = timeout ? parseInt(timeout) : 500;
+		timeout = timeout ? parseInt(timeout) : 2000;
 
 		window.setTimeout(function () {
 			logger.innerHTML = '';
@@ -171,10 +172,12 @@
 	document.addEventListener('keypress', listener, !0);
 
 	/**
-	 * Wait 1000ms for your bot to execute its tests then report the results.
+	 * Wait for your bot to execute its tests then report the results.
 	 */
+	document.onload = function () {
 
-	reportDetections(1000);
+		reportDetections(2000);
+	};
 
 </script>
 
