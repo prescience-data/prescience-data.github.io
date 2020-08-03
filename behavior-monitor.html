@@ -24,6 +24,11 @@
 		</div>
 		<div class="row mb-5">
 			<div class="col-12">
+				<input type="text" id="test-input" class="form-control w-100" placeholder="Use this for testing input..."/>
+			</div>
+		</div>
+		<div class="row mb-5">
+			<div class="col-12">
 				<div id="dump"></div>
 			</div>
 		</div>
@@ -63,7 +68,7 @@
 			var output = '';
 			for (var property in obj) {
 				if (property === 'type') {
-					output = obj[property];
+					output = obj[property] + ' { isTrusted: ' + String(obj.isTrusted) + ' }';
 				}
 			}
 			dumper.innerHTML += '<code>' + output + '</code><br><br>';
@@ -80,7 +85,7 @@
 					output += property + ': ' + val + '; ';
 				}
 			}
-			fullDumper.innerHTML += '<code>' + output + '</code><br><br>';
+			fullDumper.innerHTML += '<div class="border rounded p-3 mb-3"><code>' + output + '</code></div>';
 		});
 
 	}
