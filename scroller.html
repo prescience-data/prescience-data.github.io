@@ -1,0 +1,53 @@
+<html lang="en">
+<head>
+  <title>Touch Swipe Recorder</title>
+  <style type="text/css">
+	  body {
+		  height: 100%;
+		  width: 100%;
+		  padding: 0;
+		  margin: 0;
+		  background: #0a1b2b;
+		  color: #fafcfc;
+	  }
+
+	  #swiper {
+		  height: 100vh;
+		  width: 100%;
+	  }
+
+	  #output {
+		  padding: 20px;
+		  color: #3ce4b3;
+		  text-shadow: 0 0 3px rgba(219 250 241, 0.6);
+	  }
+  </style>
+</head>
+<body>
+<div id="swiper"></div>
+<div id="output" style="display: none"></div>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" crossorigin="anonymous"></script>
+<script type="text/javascript">
+  $(function() {
+    var $swiper = $("#swiper")
+    var $output = $("#output")
+    var scrolls = []
+    var scroll = []
+    $swiper.bind("touchstart touchmove touchend touchcancel", function(e) {
+      scroll.push(e)
+      if (e.type === "touchend") {
+        scrolls.push(scroll)
+        scroll = []
+        if (scrolls.length > 10) {
+          $swiper.hide("slow", function() {
+            $output.show("fast", function() {
+              alert("Capture complete.")
+            })
+          })
+        }
+      }
+    })
+  })
+</script>
+</body>
+</html>
