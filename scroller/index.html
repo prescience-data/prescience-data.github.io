@@ -45,7 +45,9 @@
       var path
       while (node.parentElement) {
         var name = node.localName
-        if (!name) break
+        if (!name) {
+          break
+        }
         name = name.toLowerCase()
         var parent = node.parentElement
 
@@ -63,9 +65,9 @@
         }
 
         if (domSiblings.length > 1) {
-          name += ':eq(' + domSiblings.indexOf(node) + ')'
+          name += ":eq(" + domSiblings.indexOf(node) + ")"
         }
-        path = name + (path ? '>' + path : '')
+        path = name + (path ? ">" + path : "")
         node = parent
       }
 
@@ -106,7 +108,7 @@
           returnValue: e.returnValue,
           screenX: e.screenX,
           screenY: e.screenY,
-          touches: (e.touches && e.touches[0]) ? e.touches[0] : null,
+          touches: (e.touches && e.touches[0]) ? { clientX: e.touches[0].clientX, clientY: e.touches[0].clientY } : null,
           shiftKey: e.shiftKey,
           sourceCapabilities: e.sourceCapabilities ? e.sourceCapabilities.toString() : null,
           //target: e.target ? e.target.outerHTML : null,
@@ -126,7 +128,7 @@
     var push = function(data) {
       var xhr = new XMLHttpRequest()
       xhr.open("POST", COLLECTION_ENDPOINT, true)
-      xhr.setRequestHeader('Content-Type', 'application/json')
+      xhr.setRequestHeader("Content-Type", "application/json")
       xhr.send(JSON.stringify({
                                 data: data,
                                 timestamp: Date.now()
@@ -142,19 +144,19 @@
       event = serializeEvent(event)
       scroll.push(event)
       scrolls.push(scrolls)
-      $scroller.innerText =  JSON.stringify(scroll, undefined, 2)
+      $scroller.innerText = JSON.stringify(scroll, undefined, 2)
       console.log(scroll)
       push(scroll)
       scroll = []
     }
 
-    document.addEventListener('touchmove', listener, !0)
-    document.addEventListener('touchstart', listener, !0)
-    document.addEventListener('touchend', closer, !0)
-    document.addEventListener('touchcancel', listener, !0)
-    document.addEventListener('click', listener, !0)
-    document.addEventListener('pointerdown', listener, !0)
-    document.addEventListener('pointerup', closer, !0)
+    document.addEventListener("touchmove", listener, !0)
+    document.addEventListener("touchstart", listener, !0)
+    document.addEventListener("touchend", closer, !0)
+    document.addEventListener("touchcancel", listener, !0)
+    document.addEventListener("click", listener, !0)
+    document.addEventListener("pointerdown", listener, !0)
+    document.addEventListener("pointerup", closer, !0)
 
   })()
 </script>
