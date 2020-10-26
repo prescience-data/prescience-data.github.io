@@ -1,0 +1,163 @@
+<html lang="en">
+<head>
+  <title>Touch Swipe Recorder</title>
+  <style type="text/css">
+	  body {
+		  height: 100%;
+		  width: 100%;
+		  padding: 0;
+		  margin: 0;
+		  background: #0a1b2b;
+		  color: #fafcfc;
+	  }
+
+	  #scroller {
+		  height: 100vh;
+		  width: 100%;
+		  padding: 20px;
+		  color: #3ce4b3;
+		  text-shadow: 0 0 2px rgba(219, 250, 241, 0.6);
+		  line-height: 16pt;
+		  font-size: 12pt;
+		  font-family: "Heebo", monospace;
+		  overflow: hidden;
+	  }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo&display=swap" rel="stylesheet">
+</head>
+<body>
+<pre id="scroller">
+  Waiting...
+</pre>
+<script type="text/javascript">
+  (function() {
+    var COLLECTION_ENDPOINT = "https://a9898beab729ed12d3e037481c48efba.m.pipedream.net"
+    var $scroller = document.getElementById("scroller")
+    var scrolls = []
+    var scroll = []
+
+    // Generate a JSON version of the event.
+    var pathToSelector = function(node) {
+      if (!node || !node.outerHTML) {
+        return null
+      }
+
+      var path
+      while (node.parentElement) {
+        var name = node.localName
+        if (!name) break
+        name = name.toLowerCase()
+        var parent = node.parentElement
+
+        var domSiblings = []
+
+        if (parent.children && parent.children.length > 0) {
+          for (var i = 0; i < parent.children.length; i++) {
+            var sibling = parent.children[i]
+            if (sibling.localName && sibling.localName.toLowerCase) {
+              if (sibling.localName.toLowerCase() === name) {
+                domSiblings.push(sibling)
+              }
+            }
+          }
+        }
+
+        if (domSiblings.length > 1) {
+          name += ':eq(' + domSiblings.indexOf(node) + ')'
+        }
+        path = name + (path ? '>' + path : '')
+        node = parent
+      }
+
+      return path
+    }
+
+    var serializeEvent = function(e) {
+      if (e) {
+        var o = {
+          eventName: e.toString(),
+          altKey: e.altKey,
+          bubbles: e.bubbles,
+          button: e.button,
+          buttons: e.buttons,
+          cancelBubble: e.cancelBubble,
+          cancelable: e.cancelable,
+          clientX: e.clientX,
+          clientY: e.clientY,
+          composed: e.composed,
+          ctrlKey: e.ctrlKey,
+          currentTarget: e.currentTarget ? e.currentTarget.outerHTML : null,
+          defaultPrevented: e.defaultPrevented,
+          detail: e.detail,
+          eventPhase: e.eventPhase,
+          //fromElement: e.fromElement ? e.fromElement.outerHTML : null,
+          isTrusted: e.isTrusted,
+          layerX: e.layerX,
+          layerY: e.layerY,
+          metaKey: e.metaKey,
+          movementX: e.movementX,
+          movementY: e.movementY,
+          offsetX: e.offsetX,
+          offsetY: e.offsetY,
+          pageX: e.pageX,
+          pageY: e.pageY,
+          path: pathToSelector(e.path && e.path.length ? e.path[0] : null),
+          relatedTarget: e.relatedTarget ? e.relatedTarget.outerHTML : null,
+          returnValue: e.returnValue,
+          screenX: e.screenX,
+          screenY: e.screenY,
+          shiftKey: e.shiftKey,
+          sourceCapabilities: e.sourceCapabilities ? e.sourceCapabilities.toString() : null,
+          //target: e.target ? e.target.outerHTML : null,
+          timeStamp: e.timeStamp,
+          //toElement: e.toElement ? e.toElement.outerHTML : null,
+          type: e.type,
+          view: e.view ? e.view.toString() : null,
+          which: e.which,
+          x: e.x,
+          y: e.y
+        }
+
+        return o
+      }
+    }
+
+    var push = function(data) {
+      var xhr = new XMLHttpRequest()
+      xhr.open("POST", COLLECTION_ENDPOINT, true)
+      xhr.setRequestHeader('Content-Type', 'application/json')
+      xhr.send(JSON.stringify({
+                                data: data,
+                                timestamp: Date.now()
+                              }, undefined, 2))
+    }
+
+    var listener = function(event) {
+      event = serializeEvent(event)
+      scroll.push(event)
+    }
+
+    var closer = function(event) {
+      event = serializeEvent(event)
+      scroll.push(event)
+      scrolls.push(scrolls)
+      $scroller.innerText =  JSON.stringify(scroll, undefined, 2)
+      console.log(scroll)
+      push(scroll)
+      scroll = []
+    }
+
+    document.addEventListener('touchmove', listener, !0)
+    document.addEventListener('touchstart', listener, !0)
+    document.addEventListener('touchend', closer, !0)
+    document.addEventListener('touchcancel', listener, !0)
+    document.addEventListener('click', listener, !0)
+    document.addEventListener('mousedown', listener, !0)
+    document.addEventListener('mouseup', closer, !0)
+    document.addEventListener('pointerdown', listener, !0)
+    document.addEventListener('pointerup', closer, !0)
+
+  })()
+</script>
+</body>
+</html>
