@@ -90,6 +90,7 @@
           defaultPrevented: e.defaultPrevented,
           detail: e.detail,
           eventPhase: e.eventPhase,
+          //fromElement: e.fromElement ? e.fromElement.outerHTML : null,
           isTrusted: e.isTrusted,
           layerX: e.layerX,
           layerY: e.layerY,
@@ -107,7 +108,9 @@
           screenY: e.screenY,
           shiftKey: e.shiftKey,
           sourceCapabilities: e.sourceCapabilities ? e.sourceCapabilities.toString() : null,
+          //target: e.target ? e.target.outerHTML : null,
           timeStamp: e.timeStamp,
+          //toElement: e.toElement ? e.toElement.outerHTML : null,
           type: e.type,
           view: e.view ? e.view.toString() : null,
           which: e.which,
@@ -146,7 +149,7 @@
 
     document.addEventListener('touchmove', listener, !0)
     document.addEventListener('touchstart', listener, !0)
-    document.addEventListener('touchend', listener, !0)
+    document.addEventListener('touchend', closer, !0)
     document.addEventListener('touchcancel', listener, !0)
     document.addEventListener('click', listener, !0)
     document.addEventListener('pointerdown', listener, !0)
