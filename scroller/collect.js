@@ -129,6 +129,7 @@
       .then((res) => {
         try {
           ip = res
+          console.log(ip)
           return ip
         } catch (err) {
           console.log(err.message)
