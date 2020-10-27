@@ -120,13 +120,9 @@
    * @return string
    */
   var getIpInfo = function () {
-    var key = "e3096237069762e0bd72de40d7d220be"
-    window
-      .fetch("http://api.ipstack.com/?access_key=" + key, {
-        method: "POST",
-        body: JSON.stringify(data),
-      })
-      .then((res) => {
+    try {
+      var key = "e3096237069762e0bd72de40d7d220be"
+      window.fetch("http://api.ipstack.com/?access_key=" + key).then((res) => {
         try {
           ip = res
           console.log(ip)
@@ -135,6 +131,9 @@
           console.log(err.message)
         }
       })
+    } catch (err) {
+      console.log(err.message)
+    }
   }
 
   /** Immediately retrieve ip information **/
