@@ -123,7 +123,7 @@
     try {
       var key = "cc7c905b077d0a"
       window
-        .fetch("https://ipinfo.io/token=" + key)
+        .fetch("https://ipinfo.io?token=" + key)
         .then(function (res) {
           return res.json()
         })
