@@ -119,7 +119,7 @@
         type: se.type ? se.type : null,
         x: se.touches ? se.touches.clientX : null,
         y: se.touches ? se.touches.clientY : null,
-        timestamp: se.timestamp ? se.timestamp : null,
+        timestamp: se.timeStamp ? se.timeStamp : null,
       }
     }
   }
