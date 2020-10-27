@@ -122,7 +122,7 @@
   var getIpInfo = function () {
     try {
       var key = "e3096237069762e0bd72de40d7d220be"
-      window.fetch("http://api.ipstack.com/?access_key=" + key).then((res) => {
+      window.fetch("https://api.ipstack.com/?access_key=" + key).then((res) => {
         try {
           ip = res
           console.log(ip)
