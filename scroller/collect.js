@@ -163,6 +163,7 @@
    */
   var canceller = function (event) {
     console.log("Cancelled touch: " + event.type)
+    $scroller.innerText = "Touch cancelled."
     scroll = []
   }
 
@@ -192,4 +193,5 @@
   //document.addEventListener("click", listener, !0)
   //document.addEventListener("pointerdown", listener, !0)
   //document.addEventListener("pointerup", closer, !0)
+  $scroller.innerText = "Listening..."
 })()
