@@ -128,7 +128,7 @@
           return response.text()
         })
         .then(function (data) {
-          resolve(data ? JSON.parse(data) : {})
+          return (ip = data ? JSON.parse(data) : {})
         })
         .catch(function (error) {
           console.log(error.message)
