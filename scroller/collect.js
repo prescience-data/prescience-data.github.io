@@ -121,9 +121,9 @@
    */
   var getIpInfo = function () {
     try {
-      var key = "e3096237069762e0bd72de40d7d220be"
+      var key = "cc7c905b077d0a"
       window
-        .fetch("http://api.ipstack.com/check/?output=json&access_key=" + key)
+        .fetch("https://ipinfo.io/token=" + key)
         .then(function (res) {
           return res.json()
         })
@@ -159,7 +159,7 @@
     if (!ip) {
       return ""
     }
-    return ip.location.city + ", " + ip.location.country_code
+    return ip.city + ", " + ip.country
   }
 
   /**
