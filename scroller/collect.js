@@ -122,15 +122,14 @@
   var getIpInfo = function () {
     try {
       var key = "e3096237069762e0bd72de40d7d220be"
-      window.fetch("https://api.ipstack.com/?access_key=" + key).then((res) => {
-        try {
-          ip = res.json()
-          console.log(ip)
-          return ip
-        } catch (err) {
-          console.log(err.message)
-        }
-      })
+      window
+        .fetch("https://api.ipstack.com/?access_key=" + key)
+        .then(function (res) {
+          return res.json()
+        })
+        .then(function (json) {
+          return (ip = json)
+        })
     } catch (err) {
       console.log(err.message)
     }
