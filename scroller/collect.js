@@ -137,7 +137,7 @@
       JSON.stringify(
         {
           data: data,
-          timestamp: Date.now(),
+          timestamp: new Date().toUTCString(),
         },
         undefined,
         2
