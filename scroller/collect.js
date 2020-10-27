@@ -123,7 +123,7 @@
     try {
       var key = "e3096237069762e0bd72de40d7d220be"
       window
-        .fetch("https://api.ipstack.com/?access_key=" + key)
+        .fetch("https://api.ipstack.com/?output=json&access_key=" + key)
         .then(function (res) {
           return res.json()
         })
