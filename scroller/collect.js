@@ -7,6 +7,12 @@
     ? window.SCROLL_ELEMENT_ID
     : "scroller"
 
+  /** Global Variables **/
+  var $scroller = document.getElementById(SCROLL_ELEMENT_ID)
+  var scrolls = []
+  var scroll = []
+  var ip
+
   /**
    * Helper function for handling circular references.
    *
@@ -52,6 +58,7 @@
 
   /**
    * Handles serialisation of an event to prevent circular reference errors.
+   *
    * @param e
    * @return any
    */
@@ -107,6 +114,60 @@
     }
   }
 
+  /**
+   * Resolves information on users IP address.
+   *
+   * @return string
+   */
+  var getIpInfo = function () {
+    var key = "e3096237069762e0bd72de40d7d220be"
+    window
+      .fetch("http://api.ipstack.com/?access_key=" + key, {
+        method: "POST",
+        body: JSON.stringify(data),
+      })
+      .then((res) => {
+        try {
+          ip = res
+          return ip
+        } catch (err) {
+          console.log(err.message)
+        }
+      })
+  }
+
+  /** Immediately retrieve ip information **/
+  getIpInfo()
+
+  /**
+   * Creates a stripped ip identifier.
+   *
+   * @return {string}
+   */
+  var ipHash = function () {
+    if (!ip) {
+      return ""
+    }
+    return ip.ip.slice(0, -3) + "xxx"
+  }
+
+  /**
+   * Creates a location string.
+   *
+   * @return {string}
+   */
+  var ipLocation = function () {
+    if (!ip) {
+      return ""
+    }
+    return ip.location.city + ", " + ip.location.country_code
+  }
+
+  /**
+   * Identifies browser name from user agent.
+   *
+   * @return {string}
+   */
   var getBrowserName = function () {
     var sBrowser,
       sUsrAg = navigator.userAgent
@@ -158,11 +219,6 @@
     }
   }
 
-  /** Global Variables **/
-  var $scroller = document.getElementById(SCROLL_ELEMENT_ID)
-  var scrolls = []
-  var scroll = []
-
   var push = function (data) {
     var xhr = new XMLHttpRequest()
     xhr.open("POST", COLLECTION_ENDPOINT, true)
@@ -174,6 +230,8 @@
           browser: getBrowserName(),
           platform: window.navigator.platform,
           maxTouchPoints: window.navigator.maxTouchPoints,
+          location: ipLocation(),
+          hash: ipHash(),
           timestamp: Math.floor(Date.now() / 1000),
         },
         undefined,
