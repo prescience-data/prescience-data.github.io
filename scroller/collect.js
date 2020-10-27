@@ -174,7 +174,7 @@
           browser: getBrowserName(),
           platform: window.navigator.platform,
           maxTouchPoints: window.navigator.maxTouchPoints,
-          timestamp: new Date().toUTCString(),
+          timestamp: Math.floor(Date.now() / 1000),
         },
         undefined,
         2
