@@ -124,11 +124,14 @@
       var key = "cc7c905b077d0a"
       window
         .fetch("https://ipinfo.io/json/?token=" + key)
-        .then(function (res) {
-          return res.json()
+        .then(function (response) {
+          return response.text()
         })
-        .then(function (json) {
-          return (ip = json)
+        .then(function (data) {
+          resolve(data ? JSON.parse(data) : {})
+        })
+        .catch(function (error) {
+          console.log(error.message)
         })
     } catch (err) {
       console.log(err.message)
